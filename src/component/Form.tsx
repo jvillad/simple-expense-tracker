@@ -1,12 +1,16 @@
+import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
+import { v4 as uuid } from 'uuid';
+import fetchExpenses from '../helper/fetchExpenses';
+import Display from './Display';
 
 function Form() {
-  const expenses: {
-    dailyBudget: number;
-    expense: number;
-    description: string;
-    category: string;
-  }[] = [];
+  const [maxBudget, setMaxBudget] = useState<number>();
+
+  const currentData = fetchExpenses();
+  useEffect(() => {
+    if (currentData) setMaxBudget(currentData[0].dailyBudget);
+  }, [currentData]);
 
   // formik initial values
   const formik = useFormik({
@@ -21,15 +25,17 @@ function Form() {
 
     // on submit form
     onSubmit: (userInput) => {
-      const nonParsed = localStorage.getItem('userExpenses');
-      if (nonParsed !== null) {
-        const oldData: string = JSON.parse(nonParsed);
-        expenses.push(userInput);
+      const data = fetchExpenses();
+      if (data) {
         localStorage.setItem(
           'userExpenses',
-          JSON.stringify([...oldData, expenses])
+          JSON.stringify([...data, userInput])
         );
+      } else {
+        localStorage.setItem('userExpenses', JSON.stringify([userInput]));
+        setMaxBudget(userInput.dailyBudget);
       }
+      formik.resetForm();
     },
   });
 
@@ -37,18 +43,22 @@ function Form() {
     <main>
       <form onSubmit={formik.handleSubmit}>
         {/* Daily Budget Input */}
-        <div>
-          <label htmlFor="dailyBudget">
-            Daily Budget
-            <input
-              type="number"
-              name="dailyBudget"
-              placeholder="Enter budget here"
-              value={formik.values.dailyBudget}
-              onChange={formik.handleChange}
-            />
-          </label>
-        </div>
+        {!maxBudget ? (
+          <div>
+            <label htmlFor="dailyBudget">
+              Daily Budget
+              <input
+                type="number"
+                name="dailyBudget"
+                placeholder="Enter budget here"
+                value={formik.values.dailyBudget}
+                onChange={formik.handleChange}
+              />
+            </label>
+          </div>
+        ) : (
+          <h1>{maxBudget}</h1>
+        )}
         {/* Expense Amount */}
         <div>
           <label htmlFor="expense">
@@ -94,6 +104,9 @@ function Form() {
         </div>
         <button type="submit">Add Expense</button>
       </form>
+      {currentData?.map((values) => {
+        return <Display key={uuid()} expenseList={values} />;
+      })}
     </main>
   );
 }
