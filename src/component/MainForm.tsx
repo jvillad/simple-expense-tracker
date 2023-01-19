@@ -6,19 +6,31 @@ import fetchExpenses from '../helper/fetchExpenses';
 import Display from './Display';
 import setItem from '../helper/setItem';
 import DailyBudgetForm from './DailyBudgetForm';
+import UserBudgetHeader from './UserBudgetHeader';
+import UserRemainingBudget from './UserRemainingBudget';
 
 function Form() {
   const [showForm, setShowForm] = useState<boolean>(false);
-  let budget = localStorage.getItem('userMaxBudget');
-  if (budget) {
-    budget = JSON.parse(budget);
+  const [balance, setBalance] = useState<number>(0);
+  const [maxBudget, setMaxBudget] = useState<number>();
+  const remaining = localStorage.getItem('remaining');
+
+  // after push the max budget to localdb, get the data
+  const budget = localStorage.getItem('userMaxBudget');
+
+  if (maxBudget) {
+    // set maxbudget to local storage
+    localStorage.setItem('userMaxBudget', JSON.stringify(maxBudget));
+    // set the remaining holder in local storage - expense
+    localStorage.setItem('userRemaining', JSON.stringify(maxBudget));
+    setMaxBudget(undefined);
   }
 
   const currentData = fetchExpenses();
+
   // formik initial values
   const formik = useFormik({
     initialValues: {
-      dailyBudget: 0,
       expense: 0,
       description: '',
       category: '',
@@ -35,6 +47,12 @@ function Form() {
 
     // on submit form
     onSubmit: (userInput) => {
+      const prevBal = localStorage.getItem('userRemaining');
+      if (prevBal) {
+        const currentBal = JSON.parse(prevBal) - userInput.expense;
+        localStorage.setItem('userRemaining', JSON.stringify(currentBal));
+        setBalance(currentBal);
+      }
       const data = fetchExpenses();
       if (data) {
         setItem('userExpenses', [...data, userInput]);
@@ -48,9 +66,16 @@ function Form() {
     <main>
       <div className="flex items-center justify-center">
         <div className="bg-white rounded-lg w-2/6">
-          <div className="flex-1 text-gray-700 p-20  grid place-items-center">
+          <UserBudgetHeader userDailyBudget={budget ? JSON.parse(budget) : 0} />
+          <UserRemainingBudget
+            remainingBudget={remaining ? JSON.parse(remaining) : budget}
+          />
+          <div className="text-gray-700 py-5 pb-10 grid place-items-center">
             {!showForm ? (
-              <DailyBudgetForm setShowForm={setShowForm} />
+              <DailyBudgetForm
+                setShowForm={setShowForm}
+                setMaxBudget={setMaxBudget}
+              />
             ) : (
               <form onSubmit={formik.handleSubmit}>
                 {/* Expense Amount */}
@@ -117,11 +142,7 @@ function Form() {
       </div>
       {currentData?.map((values) => {
         return (
-          <Display
-            key={uuid()}
-            expenseList={values}
-            dailyBudget={currentData[0].dailyBudget}
-          />
+          <Display key={uuid()} expenseList={values} userBalance={balance} />
         );
       })}
     </main>
