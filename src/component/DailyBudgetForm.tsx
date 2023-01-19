@@ -4,9 +4,10 @@ import * as Yup from 'yup';
 
 interface IProps {
   setShowForm: Dispatch<SetStateAction<boolean>>;
+  setMaxBudget: (value: number) => void;
 }
 
-function DailyBudgetForm({ setShowForm }: IProps) {
+function DailyBudgetForm({ setShowForm, setMaxBudget }: IProps) {
   const checkStoredBudget = localStorage.getItem('userMaxBudget');
   useEffect(() => {
     if (checkStoredBudget) setShowForm(true);
@@ -26,10 +27,7 @@ function DailyBudgetForm({ setShowForm }: IProps) {
     // on submit form
     onSubmit: (inputValues) => {
       setShowForm(true);
-      localStorage.setItem(
-        'userMaxBudget',
-        JSON.stringify(inputValues.dailyBudget)
-      );
+      setMaxBudget(inputValues.dailyBudget);
     },
   });
 
