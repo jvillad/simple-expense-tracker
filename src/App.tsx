@@ -1,11 +1,11 @@
-// import DateTime from './component/DateTime';
-import Form from './component/Form';
+import MainForm from './component/MainForm';
+import Header from './component/Header';
 
 function App() {
   return (
     <div>
-      {/* <DateTime /> */}
-      <Form />
+      <Header />
+      <MainForm />
     </div>
   );
 }
