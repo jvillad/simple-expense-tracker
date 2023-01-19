@@ -1,5 +1,4 @@
 export interface Expense {
-  dailyBudget: number;
   expense: number;
   description: string;
   category: string;
