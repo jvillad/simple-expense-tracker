@@ -1,5 +1,5 @@
 interface IProps {
-  remainingBudget: number;
+  remainingBudget: number | string | null;
 }
 
 function UserBudgetHeader({ remainingBudget }: IProps) {
