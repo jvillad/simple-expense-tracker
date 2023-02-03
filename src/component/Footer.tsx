@@ -13,7 +13,7 @@ function Footer() {
         <div className="bg-[#2B70A7] rounded w-5/6 pb-10">
           <div className="grid grid-cols-4 gap-3 max-w-3xl m-auto pt-10 font-bold text-white">
             <div className="col-span-2">Category</div>
-            <div>Expense</div>
+            <div>Amount</div>
             <div>Expense Details</div>
           </div>
         </div>

@@ -35,9 +35,9 @@ function DailyBudgetForm({ setShowForm, setMaxBudget }: IProps) {
     <div>
       {!checkStoredBudget && (
         <form onSubmit={formik.handleSubmit}>
-          <div className="">
+          <div>
             <label
-              className="block text-lg p-2 font-bold"
+              className="block text-lg p-2 font-bold text-center text-[#f353b2]"
               htmlFor="dailyBudget"
             >
               Daily Budget
