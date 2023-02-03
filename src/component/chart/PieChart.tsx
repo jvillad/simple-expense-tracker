@@ -18,7 +18,7 @@ interface IDataProps {
   chartData: Expense[];
 }
 
-function DoughnutChart({ chartData }: IDataProps) {
+function PieChart({ chartData }: IDataProps) {
   const [totals, setTotals] = useState<ITotals[]>([]);
   const calculateTotals = (expenses: Expense[]) => {
     const newTotals = expenses.reduce(
@@ -67,10 +67,16 @@ function DoughnutChart({ chartData }: IDataProps) {
           {
             label: 'User Expense',
             data: totals.map((values: IChartProps) => values.amount),
+            // TODO:
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            backgroundColor: ['#2B70A7', '#BF1E2E', '#EF4136', '#F15A2B'],
-            hoverOffset: 8,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+            ],
+            hoverOffset: 2,
           },
         ],
       });
@@ -83,4 +89,4 @@ function DoughnutChart({ chartData }: IDataProps) {
   );
 }
 
-export default DoughnutChart;
+export default PieChart;
