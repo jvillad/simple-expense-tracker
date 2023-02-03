@@ -9,7 +9,7 @@ import DailyBudgetForm from './DailyBudgetForm';
 import UserBudgetHeader from './UserBudgetHeader';
 import UserRemainingBudget from './UserRemainingBudget';
 
-import DoughnutChart from './chart/DoughnutChart';
+import PieChart from './chart/PieChart';
 
 function Form() {
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -63,10 +63,26 @@ function Form() {
     },
   });
   return (
-    <main className="">
+    <main className="mt-14 h-screen">
       <div className="grid place-items-center">
         <div className="grid grid-cols-2 w-5/6">
           <div className="grid place-items-center">
+            {/* <div className="w-3/6"> */}
+            <button
+              type="button"
+              className={
+                budget
+                  ? 'bg-gray-700 text-white p-3 rounded text-sm font-semibold mb-2 w-3/6'
+                  : 'hidden'
+              }
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+            >
+              Reset Budget
+            </button>
+            {/* </div> */}
             <div className="bg-white rounded-lg w-3/6">
               <UserBudgetHeader
                 userDailyBudget={budget ? JSON.parse(budget) : 0}
@@ -74,8 +90,8 @@ function Form() {
               <UserRemainingBudget
                 remainingBudget={
                   localStorage.getItem('userRemaining')
-                    ? localStorage.getItem('userRemaining')
-                    : '0'
+                    ? Number(localStorage.getItem('userRemaining'))
+                    : Number(0)
                 }
               />
               <div className="text-gray-700 py-5 pb-10 grid place-items-center">
@@ -88,7 +104,10 @@ function Form() {
                   <form onSubmit={formik.handleSubmit}>
                     {/* Expense Amount */}
                     <div className="pb-3">
-                      <label className="block text-sm p-1 " htmlFor="expense">
+                      <label
+                        className="block text-sm p-1 text-gray-700"
+                        htmlFor="expense"
+                      >
                         Expense Amount
                       </label>
                       <input
@@ -153,7 +172,7 @@ function Form() {
           </div>
           <div className="grid place-items-center">
             {currentData ? (
-              <DoughnutChart chartData={currentData} />
+              <PieChart chartData={currentData} />
             ) : (
               <div className="text-center">
                 <p>No data available for chart</p>
