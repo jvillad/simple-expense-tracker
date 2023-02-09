@@ -21,7 +21,10 @@ function DailyBudgetForm({ setShowForm, setMaxBudget }: IProps) {
 
     // form validation
     validationSchema: Yup.object({
-      // TODO: Daily Budget Input Validation
+      dailyBudget: Yup.number()
+        // temp error message
+        .max(1000000, 'Exceed daily budget')
+        .min(1, 'Daily budget must be greater than 1'),
     }),
 
     // on submit form
@@ -44,6 +47,7 @@ function DailyBudgetForm({ setShowForm, setMaxBudget }: IProps) {
             </label>
             <input
               className="border-2 border-gray-400 p-2 rounded-md w-60 focus:border-teal-400"
+              required
               type="number"
               name="dailyBudget"
               placeholder="Enter budget here"
@@ -55,6 +59,9 @@ function DailyBudgetForm({ setShowForm, setMaxBudget }: IProps) {
                 }
               }}
             />
+          </div>
+          <div className="text-sm p-2 text-red-600">
+            {formik.errors.dailyBudget}
           </div>
           <button
             className="py-3 mt-6 rounded-lg w-full text-sm bg-[#2babe7] text-white"
